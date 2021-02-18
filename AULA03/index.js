@@ -9,77 +9,110 @@ Objetivo:
 Refatorar as callbacks para PROMISES
 */
 
-let userInfo, phoneUserInfo, adressUserInfo
+// let userInfo, phoneUserInfo, addressUserInfo
 
-const getUser = (callback) => {
-    setTimeout(() => {
-        return callback(null, {
-                id: 1,
-                name: 'Lucas Rodrigues',
-                birthDate: new Date()
-            }
-        ) 
-    }, 1000);
+const getUser = () => {
+    return new Promise((resolve, reject) => {
+        
+        setTimeout(() => {
+            // linha 19 - manipulação de erro
+            // return reject(new Error('DEU RUIM DE VERDADE!'))
+
+            return resolve({
+                    id: 1,
+                    name: 'Lucas Rodrigues',
+                    birthDate: new Date()
+                }
+            ) 
+        }, 1000);
+    })
 }
 
-const getUserPhone = (userId, callback) => {
-    setTimeout(() => {
-        return callback(null, {
-                number: '2222-2222',
-                ddd: 11
+const getUserPhone = (userId) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            return resolve({
+                    number: '2222-2222',
+                    ddd: 11
+                })
+        }, 2000);
+    })
+}
+
+const getUserAddress = (userId) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            return resolve({
+                street: 'Av. Teste',
+                number: 2222
             })
-    }, 2000);
+        }, 2000);
+    })
 }
 
-const getUserAdress = (userId, callback) => {
-    setTimeout(() => {
-        return callback(null, {
-            street: 'Av. Teste',
-            number: 2222
-        })
-    }, 2000);
-}
+// const userResolver = (userError, user) => {
+//     if(userError) {
+//         console.error('error with user ID', userError)
+//         return 
+//     }
 
-const userResolver = (userError, user) => {
-    if(userError) {
-        console.error('error with user ID', userError)
-        return 
-    }
+//     userInfo = user
 
-    userInfo = user
+//     getUserPhone(user.id, phoneResolver)
+//     getUserAddress(user.id, addressResolver)
+// }
 
-    getUserPhone(user.id, phoneResolver)
-    getUserAdress(user.id, adressResolver)
-}
-
-const phoneResolver = (phoneError, phone) => {
-    if(phoneError) {
-        console.error('error with user PHONE', phoneError)
-        return 
-    }
+// const phoneResolver = (phoneError, phone) => {
+//     if(phoneError) {
+//         console.error('error with user PHONE', phoneError)
+//         return 
+//     }
     
-    phoneUserInfo = phone
-}
+//     phoneUserInfo = phone
+// }
 
-const adressResolver = (adressError, adress) => {
-    if(adressError) {
-        console.error('error with user ADRESS', adressError)
-        return 
-    }
+// const addressResolver = (addressError, address) => {
+//     if(addressError) {
+//         console.error('error with user ADDRESS', addressError)
+//         return 
+//     }
 
-    adressUserInfo = adress
+//     addressUserInfo = address
 
-    showUserInfos()
+//     showUserInfos()
 
-}
+// }
 
-const showUserInfos = () => {
-    console.log(`
-        Nome: ${userInfo.name}
-        Telefone: (${phoneUserInfo.ddd}) ${phoneUserInfo.number}
-        Endereço: ${adressUserInfo.street}, ${adressUserInfo.number}
-    `)
-}
+// const showUserInfos = () => {
+//     console.log(`
+//         Nome: ${userInfo.name}
+//         Telefone: (${phoneUserInfo.ddd}) ${phoneUserInfo.number}
+//         Endereço: ${addressUserInfo.street}, ${addressUserInfo.number}
+//     `)
+// }
 
 // Chamada Inicial
-getUser(userResolver);
+const userPromise = getUser()
+// para manipular o sucesso then()
+// para manipular erros catch()
+userPromise
+    .then((user) => {
+        return getUserPhone(user.id)
+        .then(phoneResolver = (phone) => {
+            return  getUserAddress(user.id)
+                    .then(addressResolver = (address) => {
+                        return {
+                            user: user,
+                            phone : phone,
+                            address, address
+                        }
+                    })
+
+        })
+    })
+    .then((resultado) => {
+        console.log(resultado)
+    })
+    .catch((error) => {
+        console.log('Catch Error', error)
+    })
