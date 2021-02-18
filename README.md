@@ -1,2 +1,7 @@
 # NODEBR
-Retomando os estudos 2021
+2021
+Objective: Review basic NODE concepts
+
+# 2021-02-18
+01 - Node Introduction - Hellow World
+02 - Working with callbacks
