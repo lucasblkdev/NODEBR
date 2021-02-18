@@ -29,7 +29,6 @@ const getUser = () => {
         }, 1000);
     })
 }
-
 const getUserPhone = (userId) => {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -40,7 +39,6 @@ const getUserPhone = (userId) => {
         }, 2000);
     })
 }
-
 const getUserAddress = (userId, callback) => {
         setTimeout(() => {
             return callback(null, {
@@ -49,15 +47,11 @@ const getUserAddress = (userId, callback) => {
             })
         }, 2000);
 }
-
 const getAddressAsync = util.promisify(getUserAddress)
 
 
 // Chamada Inicial
 const userPromise = getUser()
-
-// para manipular o sucesso then()
-// para manipular erros catch()
 
 userPromise
     .then((user) => {
@@ -69,18 +63,20 @@ userPromise
             }
         })
     })
-    .then((resultado) => {
-        const address = getAddressAsync(resultado.user.id)
+    .then((result) => {
+        const {user, phone} = result
+
+        const address = getAddressAsync(result.user.id)
         return address.then(addressResolver = (address) => {
             return {
-                user: resultado.user,
-                phone: resultado.phone,
+                user: user,
+                phone: phone,
                 address: address
             }
         })
     })
-    .then((resultado) => {
-        console.log(resultado)
+    .then((result) => {
+        console.log('ObjectUserInfo :', result)
     })
     .catch((error) => {
         console.log('Catch Error', error)
